@@ -1,14 +1,14 @@
-Survey Metrics Project Installation Guide
+InsightFlow Project Installation Guide
 Prerequisites
 Python 3.12
 Conda package manager
 Git
 Installation Steps
 Step 1: Create a Conda Environment
-conda create -n survey_metrics_spm python=3.12
-conda activate survey_metrics_spm
+conda create -n InsightFlow
+conda activate InsightFlow
 Step 2: Clone the Repository
-git clone https://bitbucket.org/korrv01/survey_metrics/src/main/
+git clone https://github.com/vinay9977/InsightFlow.git
 cd <directory-name>
 Step 3: Install Dependencies
 python -m pip install Django
