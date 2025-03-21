@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Login</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+      <div class="container mt-5">
+        <div class="row mt-5">
+            <div class="col"></div>
+            <div class="col mt-5">
+                <form action="{% url 'auth-user' %}" method="post" class="form-group border p-4">
+                    {% csrf_token %}
+                    <input type="text" name="username" class="form-control border-dark border  my-4" placeholder="Email or Phone Number">
+                    <input type="password" name="password" class="form-control  border-dark border  my-4 " placeholder="Password">
+                    <input type="submit" class="form-control my-4 " value="Login" placeholder="Login" style="color: white; background-color: cadetblue;">
+                    <center><a style="color: cadetblue; font-weight: bold; font-size: small;">Forgot password?</a></center>
+                    <hr style="height:1px;border-width:0;color:gray;background-color:gray"/>
+                    <div class="text-center">
+                        <span style="font-size: smaller; font-weight: bold; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Don't have account?</span> 
+                        <a href="{% url 'register' %}" style="font-size: smaller; font-weight: bold;">Sign up</a>
+                    </div>
+                </form>
+                
+            </div>
+            <div class="col"></div>
+        </div>
+      </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
