@@ -79,3 +79,7 @@ To run the automated test suite:
 ```bash
 python manage.py test djf_surveys
 ```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
