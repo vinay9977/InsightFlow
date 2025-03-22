@@ -1,72 +1,85 @@
-InsightFlow
-Django Web Project - Survey Application
+# InsightFlow: A User-Friendly Platform for Psychological Surveys
 
-This is a Django-based web application designed for managing surveys. This README file provides instructions on cloning, installing, and running the project locally.
 
-Table of Contents
+## Introduction
 
-Prerequisites
+**InsightFlow** is a full-stack survey platform designed for creating, managing, and analyzing psychological surveys. Built with Django, it provides secure authentication, data collection, and reporting features for researchers and participants. This documentation is a quick guide to getting the project running locally.
 
-Clone the Repository
+> **Note:** This project is currently in the initial stage of development and may undergo significant changes.
 
-Set Up the Environment
+## Project Structure
 
-Run the Application
+```
+/
+├── README.md                # Documentation
+├── survey/                  # Survey application
+├── authenticate/            # Authentication-related code
+├── db.sqlite3               # SQLite database
+├── manage.py                # Entry point for Django commands
+└── requirements.txt         # Project dependencies
+```
 
-Project Structure
+## Prerequisites
 
-Prerequisites
+- Python 3.10+
+- Django 5+
+- Pip
+- Virtualenv (optional)
 
-Before you begin, ensure you have the following installed on your system:
+## Installation
 
-Python 3.8 or higher
+1. Clone the Repository:
 
-Django (latest version recommended)
+   ```bash
+   git clone https://github.com/vinay9977/InsightFlow.git
+   cd InsightFlow
+   ```
 
-pip (Python package installer)
+2. Set Up the Environment:
 
-Virtualenv (optional but recommended)
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
 
-Clone the Repository
+3. Run the Development Server:
 
-To clone the repository to your local machine, use the following command:
+   ```bash
+   python manage.py runserver
+   ```
 
-git clone
+   Access the app at: `http://127.0.0.1:8000`. Use one of the test accounts below or create a new one.
 
-Replace with the actual URL of the project repository.
+## Test Accounts
 
-Set Up the Environment
+| Account Type     | Username/Email   | Password   |
+|------------------|------------------|------------|
+| **Regular User** | test@gmail.com   | test       |
+| **Admin User**   | admintest        | admintest  |
 
-Navigate to the Project Directory:
+## Additional Options
 
-cd
+- Database Migration:
 
-Create a Virtual Environment (Optional):
+   ```bash
+   python manage.py migrate
+   ```
 
-python -m venv venv source venv/bin/activate # On Windows: venv\Scripts\activate
+- Create a Superuser:
 
-Install Dependencies: Install the required packages using pip:
+   ```bash
+   python manage.py createsuperuser
+   ```
 
-pip install -r requirements.txt
+## Running Tests (incomplete!)
 
-Set Up the Database: Apply database migrations:
+To run the automated test suite:
 
-python manage.py migrate
+```bash
+python manage.py test djf_surveys
+```
 
-Create a Superuser (Admin): If required, create an admin user:
+## License
 
-python manage.py createsuperuser
-
-Run the Application
-
-To start the development server, run the following command:
-
-python manage.py runserver
-
-Open your browser and navigate to http://127.0.0.1:8000/ to view the application.
-
-Project Structure
-
-A brief overview of the main project structure:
-
-/ ├── manage.py # Entry point for running Django commands ├── survey/ # Main application folder │ ├── settings.py # Application settings │ ├── urls.py # URL configuration │ ├── wsgi.py # WSGI configuration │ └── ... # Other application modules ├── templates/ # HTML templates (if applicable) ├── static/ # Static files (CSS, JavaScript, etc.) ├── db.sqlite3 # SQLite database (default, if used) ├── requirements.txt # List of dependencies └── README.md # Documentation
+This project is licensed under the [MIT License](LICENSE).
