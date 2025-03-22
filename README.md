@@ -19,21 +19,29 @@
 
 ## Prerequisites
 
-- **Python 3.13+**
-- **Django**
-- **pip**
-- **Virtualenv** (optional)
+- Conda
+- Python 3.13+
+- Django
+- Pip
+- Virtualenv (optional)
 
 ## Installation
 
-1. **Clone the Repository:**
+1. Create a Conda Environment
+
+   ```bash
+   conda create -n InsightFlow
+   conda activate InsightFlow
+   ```
+
+2. Clone the Repository:
 
    ```bash
    git clone https://github.com/vinay9977/InsightFlow.git
    cd InsightFlow
    ```
 
-2. **Set Up the Environment:**
+3. Set Up the Environment:
 
    ```bash
    python -m venv venv
@@ -41,19 +49,19 @@
    pip install -r requirements.txt
    ```
 
-3. **Set Up the Database:**
+4. Set Up the Database:
 
    ```bash
    python manage.py migrate
    ```
 
-4. **Create Superuser:**
+5. Create Superuser:
 
    ```bash
    python manage.py createsuperuser
    ```
 
-5. **Run the Development Server:**
+6. Run the Development Server:
 
    ```bash
    python manage.py runserver
