@@ -43,25 +43,13 @@
    pip install -r requirements.txt
    ```
 
-3. Set Up the Database:
-
-   ```bash
-   python manage.py migrate
-   ```
-
-4. Create a superuser if needed:
-
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-5. Run the Development Server:
+3. Run the Development Server:
 
    ```bash
    python manage.py runserver
    ```
 
-   Access the app at: `http://127.0.0.1:8000`
+   Access the app at: `http://127.0.0.1:8000`. Use one of the test accounts below or create a new one.
 
 ## Test Accounts
 
@@ -69,3 +57,17 @@
 |------------------|------------------|------------|
 | **Regular User** | test@gmail.com   | test       |
 | **Admin User**   | admintest        | admintest  |
+
+## Additional Options
+
+- Database Migration:
+
+   ```bash
+   python manage.py migrate
+   ```
+
+- Create a Superuser:
+
+   ```bash
+   python manage.py createsuperuser
+   ```
