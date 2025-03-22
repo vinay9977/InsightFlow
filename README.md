@@ -3,7 +3,9 @@
 
 ## Introduction
 
-**InsightFlow** is a Django-based web application for managing surveys. This documentation provides a quick guide to getting the project running locally.
+**InsightFlow** is a full-stack survey platform designed for creating, managing, and analyzing psychological surveys. Built with Django, it provides secure authentication, data collection, and reporting features for researchers and participants. This documentation is a quick guide to getting the project running locally.
+
+> **Note:** This project is currently in the initial stage of development and may undergo significant changes.
 
 ## Project Structure
 
@@ -19,29 +21,21 @@
 
 ## Prerequisites
 
-- Conda
-- Python 3.13+
-- Django
+- Python 3.10+
+- Django 5+
 - Pip
 - Virtualenv (optional)
 
 ## Installation
 
-1. Create a Conda Environment
-
-   ```bash
-   conda create -n InsightFlow
-   conda activate InsightFlow
-   ```
-
-2. Clone the Repository:
+1. Clone the Repository:
 
    ```bash
    git clone https://github.com/vinay9977/InsightFlow.git
    cd InsightFlow
    ```
 
-3. Set Up the Environment:
+2. Set Up the Environment:
 
    ```bash
    python -m venv venv
@@ -49,19 +43,19 @@
    pip install -r requirements.txt
    ```
 
-4. Set Up the Database:
+3. Set Up the Database:
 
    ```bash
    python manage.py migrate
    ```
 
-5. Create Superuser:
+4. Create a superuser if needed:
 
    ```bash
    python manage.py createsuperuser
    ```
 
-6. Run the Development Server:
+5. Run the Development Server:
 
    ```bash
    python manage.py runserver
