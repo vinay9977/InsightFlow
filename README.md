@@ -1,72 +1,69 @@
-InsightFlow
-Django Web Project - Survey Application
+# InsightFlow: A User-Friendly Platform for Psychological Surveys
 
-This is a Django-based web application designed for managing surveys. This README file provides instructions on cloning, installing, and running the project locally.
 
-Table of Contents
+## Introduction
 
-Prerequisites
+**InsightFlow** is a Django-based web application for managing surveys. This documentation provides a quick guide to getting the project running locally.
 
-Clone the Repository
+## Project Structure
 
-Set Up the Environment
+```
+/
+├── README.md                # Documentation
+├── survey/                  # Survey application
+├── authenticate/            # Authentication-related code
+├── db.sqlite3               # SQLite database
+├── manage.py                # Entry point for Django commands
+└── requirements.txt         # Project dependencies
+```
 
-Run the Application
+## Prerequisites
 
-Project Structure
+- **Python 3.13+**
+- **Django**
+- **pip**
+- **Virtualenv** (optional)
 
-Prerequisites
+## Installation
 
-Before you begin, ensure you have the following installed on your system:
+1. **Clone the Repository:**
 
-Python 3.8 or higher
+   ```bash
+   git clone https://github.com/vinay9977/InsightFlow.git
+   cd InsightFlow
+   ```
 
-Django (latest version recommended)
+2. **Set Up the Environment:**
 
-pip (Python package installer)
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
 
-Virtualenv (optional but recommended)
+3. **Set Up the Database:**
 
-Clone the Repository
+   ```bash
+   python manage.py migrate
+   ```
 
-To clone the repository to your local machine, use the following command:
+4. **Create Superuser:**
 
-git clone
+   ```bash
+   python manage.py createsuperuser
+   ```
 
-Replace with the actual URL of the project repository.
+5. **Run the Development Server:**
 
-Set Up the Environment
+   ```bash
+   python manage.py runserver
+   ```
 
-Navigate to the Project Directory:
+   Access the app at: `http://127.0.0.1:8000`
 
-cd
+## Test Accounts
 
-Create a Virtual Environment (Optional):
-
-python -m venv venv source venv/bin/activate # On Windows: venv\Scripts\activate
-
-Install Dependencies: Install the required packages using pip:
-
-pip install -r requirements.txt
-
-Set Up the Database: Apply database migrations:
-
-python manage.py migrate
-
-Create a Superuser (Admin): If required, create an admin user:
-
-python manage.py createsuperuser
-
-Run the Application
-
-To start the development server, run the following command:
-
-python manage.py runserver
-
-Open your browser and navigate to http://127.0.0.1:8000/ to view the application.
-
-Project Structure
-
-A brief overview of the main project structure:
-
-/ ├── manage.py # Entry point for running Django commands ├── survey/ # Main application folder │ ├── settings.py # Application settings │ ├── urls.py # URL configuration │ ├── wsgi.py # WSGI configuration │ └── ... # Other application modules ├── templates/ # HTML templates (if applicable) ├── static/ # Static files (CSS, JavaScript, etc.) ├── db.sqlite3 # SQLite database (default, if used) ├── requirements.txt # List of dependencies └── README.md # Documentation
+| Account Type     | Username/Email   | Password   |
+|------------------|------------------|------------|
+| **Regular User** | test@gmail.com   | test       |
+| **Admin User**   | admintest        | admintest  |
