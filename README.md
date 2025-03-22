@@ -71,3 +71,11 @@
    ```bash
    python manage.py createsuperuser
    ```
+
+## Running Tests (incomplete!)
+
+To run the automated test suite:
+
+```bash
+python manage.py test djf_surveys
+```
