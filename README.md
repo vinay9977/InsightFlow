@@ -14,7 +14,6 @@
 ├── README.md                # Documentation
 ├── survey/                  # Survey application
 ├── authenticate/            # Authentication-related code
-├── cypress/                 # Tests
 ├── db.sqlite3               # SQLite database
 ├── manage.py                # Entry point for Django commands
 └── requirements.txt         # Project dependencies
@@ -25,7 +24,6 @@
 - Python 3.10+
 - Django 5+
 - Pip
-- Cypress
 - Virtualenv (optional)
 
 ## Installation
@@ -40,7 +38,7 @@
 2. Set Up the Environment:
 
    ```bash
-   python3 -m venv venv
+   python -m venv venv
    source venv/bin/activate  # Windows: venv\Scripts\activate
    pip install -r requirements.txt
    ```
@@ -74,38 +72,13 @@
    python manage.py createsuperuser
    ```
 
-## Running Tests
+## Running Tests (incomplete!)
 
-We use Cypress for end-to-end testing of the application, focusing on the authentication functionality:
-- Regular user login
-- Admin user login
-- Invalid login attempts
+To run the automated test suite:
 
-### Running Cypress Tests Locally
-
-1. Make sure your Django server is running:
-   ```bash
-   source venv/bin/activate
-   python3 manage.py runserver
-   ```
-
-2. In a separate terminal, run Cypress tests:
-   ```bash
-   npm run cypress:open   # For interactive test runner
-   # OR
-   npm run cypress:run    # For headless testing
-   ```
-
-## Continuous Integration
-
-This project uses GitHub Actions for continuous integration. On every push to main/master branches and pull requests, the workflow:
-
-1. Sets up the Python environment
-2. Installs dependencies
-3. Creates test users
-4. Runs the Cypress login tests against a Django test server
-
-The configuration is defined in `.github/workflows/cypress-tests.yml`.
+```bash
+python manage.py test djf_surveys
+```
 
 ## License
 
