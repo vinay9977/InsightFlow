@@ -5,11 +5,11 @@ This is a Django-based web application designed for managing surveys. This READM
 
 ## Table of Contents
 
-1. Prerequisites
-2. Clone the Repository
-3. Set Up the Environment
-4. Run the Application
-5. Project Structure
+1. [Prerequisites](#prerequisites)
+2. [Clone the Repository](#clone-the-repository)
+3. [Set Up the Environment](#set-up-the-environment)
+4. [Run the Application](#run-the-application)
+5. [Project Structure](#project-structure)
 
 
 ## Prerequisites
@@ -73,7 +73,7 @@ If required, create an admin user:
 python manage.py createsuperuser
 ```
 
-Run the Application
+## Run the Application
 
 To start the development server, run the following command:
 
