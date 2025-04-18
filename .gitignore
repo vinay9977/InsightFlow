@@ -55,7 +55,7 @@ survey/authenticate
 survey/djf_surveys/admins
 survey/djf_surveys/__pychache__
 survey/djf_surveys/locale
-survey/djf_surveys/static
+survey/djf_surveys/migrations
 survey/djf_surveys/templates
 survey/djf_surveys/templatetags
 survey/djf_surveys/*.py
