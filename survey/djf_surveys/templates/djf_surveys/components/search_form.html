@@ -1,0 +1,31 @@
+{% load i18n %}
+<div class="mb-5">
+      <form class="max-w-md">
+        <div class="relative">
+          <input
+            class="w-full h-10 pl-4 pr-10 text-sm border-gray-300 rounded-lg focus:border-teal-500 focus:ring-teal-500"
+            placeholder="{% trans 'Search surveys...' %}"
+            type="text"
+            name="q"
+          />
+
+          <button
+            class="absolute inset-y-0 right-0 p-2 mr-1 text-teal-600 hover:text-teal-700 transition-colors"
+            type="submit"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="currentColor"
+              viewbox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                fill-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+</div>

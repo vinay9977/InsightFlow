@@ -1,0 +1,97 @@
+<!doctype html>
+{% load i18n static %}
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Survey" %} - {{ title }}</title>
+    <script src="{% static 'djf_surveys/css/tailwindcss-3.3.1.js' %}"></script>
+    <script src="{% static 'djf_surveys/css/tailwindcss-plugin-3.3.1.js' %}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="{% static 'djf_surveys/js/countdown.js' %}"></script>
+    <style>
+        /* Custom style for sidebar hover expand effect */
+        #sidebar {
+            width: 4rem;
+            transition: width 0.3s ease;
+        }
+        #sidebar:hover {
+            width: 14rem;
+        }
+        .sidebar-link {
+            justify-content: center;
+        }
+        #sidebar:hover .sidebar-link {
+            justify-content: flex-start;
+        }
+        .sidebar-text {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+            display: none;
+        }
+        #sidebar:hover .sidebar-text {
+            opacity: 1;
+            display: inline;
+        }
+        .main-content {
+            margin-left: 4rem;
+            transition: margin-left 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="bg-gray-50">
+    {% include 'djf_surveys/components/header_nav2.html' %}
+
+    {% if messages %}
+    {% for message in messages %}
+    {% include 'djf_surveys/components/alert.html' %}
+    {% endfor %}
+    {% endif %}
+    
+    <!-- Tailwind Sidebar -->
+    <aside id="sidebar" class="fixed top-0 left-0 z-40 h-screen pt-20 bg-teal-600 shadow-lg transition-all md:translate-x-0 -translate-x-full">
+        <div class="h-full px-2 py-4 overflow-y-auto">
+            <ul class="space-y-3 font-medium">
+                <li>
+                    <a href="/" class="sidebar-link flex items-center p-2 text-base text-gray-900 rounded-lg bg-white hover:bg-gray-100 group transition-all duration-200 ease-in-out">
+                        <i class="fa fa-home text-xl text-teal-600" aria-hidden="true"></i>
+                        <span class="sidebar-text ml-3">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard" class="sidebar-link flex items-center p-2 text-base text-white rounded-lg hover:bg-teal-700 group transition-all duration-200 ease-in-out">
+                        <i class="fa fa-tasks text-xl text-white" aria-hidden="true"></i>
+                        <span class="sidebar-text ml-3">Surveys</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+    
+    <!-- Sidebar toggle button for mobile -->
+    <button id="sidebar-toggle" type="button" class="fixed z-50 bottom-4 right-4 md:hidden inline-flex items-center p-2 text-sm font-medium text-white bg-teal-600 rounded-full hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+    </button>
+    
+    <!-- Main content area with correct margin to match sidebar width -->
+    <div class="transition-all duration-300 main-content pt-20">
+        <div class="mx-auto w-full px-4">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+
+    {% include 'djf_surveys/components/alert_js.html' %}
+    <script src="{% static 'djf_surveys/js/sidebar.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
