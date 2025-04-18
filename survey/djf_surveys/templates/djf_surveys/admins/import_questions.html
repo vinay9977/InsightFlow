@@ -1,0 +1,124 @@
+{% extends 'djf_surveys/admins/master.html' %}
+{% load i18n static %}
+
+{% block content %}
+<div class="max-w-screen-xl px-4 py-16 mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-lg mx-auto">
+        <h1 class="text-2xl font-bold text-center text-teal-600 sm:text-3xl">{{ title_page }}</h1>
+        <p class="max-w-md mx-auto mt-4 text-center text-gray-500">
+            {% trans "Select questions from other surveys to import into" %} <strong>{{ object.name }}</strong>
+        </p>
+        
+        <div class="p-8 mt-6 mb-0 space-y-4 rounded-lg shadow-md border border-gray-200 bg-white">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-5">
+                    <label class="text-base font-medium">{% trans "Select Source Survey" %}</label>
+                    <select id="source-survey" name="source_survey" class="w-full p-4 pr-12 text-sm border-gray-300 rounded-lg shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                        <option value="">{% trans "Choose a survey" %}</option>
+                        {% for survey in other_surveys %}
+                            <option value="{{ survey.id }}">{{ survey.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div id="questions-container" class="mt-8 hidden">
+                    <h3 class="font-medium mb-3">{% trans "Available Questions" %}</h3>
+                    <div id="questions-list" class="space-y-3 max-h-96 overflow-y-auto">
+                        <!-- Questions will be loaded here via JavaScript -->
+                    </div>
+                    
+                    <div class="flex mt-6 justify-between">
+                        <button type="button" onclick="selectAllQuestions()" class="px-5 py-3 text-sm font-medium text-white bg-gray-500 hover:bg-gray-600 rounded-lg transition-colors duration-200">
+                            {% trans "Select All" %}
+                        </button>
+                        <button type="button" onclick="deselectAllQuestions()" class="px-5 py-3 text-sm font-medium text-white bg-gray-500 hover:bg-gray-600 rounded-lg transition-colors duration-200">
+                            {% trans "Deselect All" %}
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-8">
+                    <a href="{% url 'djf_surveys:admin_forms_survey' object.slug %}" class="px-5 py-3 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-200">
+                        {% trans "Cancel" %}
+                    </a>
+                    <button type="submit" id="submit-btn" disabled class="px-5 py-3 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg opacity-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+                        {% trans "Import Selected Questions" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const sourceSelect = document.getElementById('source-survey');
+    const questionsContainer = document.getElementById('questions-container');
+    const questionsList = document.getElementById('questions-list');
+    const submitBtn = document.getElementById('submit-btn');
+    let checkboxes = [];
+    
+    // Load questions when a survey is selected
+    sourceSelect.addEventListener('change', function() {
+        const surveyId = this.value;
+        if (!surveyId) {
+            questionsContainer.classList.add('hidden');
+            return;
+        }
+        
+        fetch(`{% url 'djf_surveys:admin_get_survey_questions' pk=0 %}`.replace('0', surveyId))
+            .then(response => response.json())
+            .then(data => {
+                questionsContainer.classList.remove('hidden');
+                questionsList.innerHTML = '';
+                
+                if (data.questions.length === 0) {
+                    questionsList.innerHTML = '<p class="text-gray-500">{% trans "No questions available in this survey" %}</p>';
+                    return;
+                }
+                
+                data.questions.forEach(question => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'p-4 border rounded-lg';
+                    questionDiv.innerHTML = `
+                        <label class="flex items-center">
+                            <input type="checkbox" name="question_ids" value="${question.id}" class="w-5 h-5 mr-3">
+                            <div>
+                                <div class="font-medium">${question.label}</div>
+                                <div class="text-xs text-gray-500">${question.type_field} ${question.required ? '(Required)' : ''}</div>
+                            </div>
+                        </label>
+                    `;
+                    questionsList.appendChild(questionDiv);
+                });
+                
+                checkboxes = document.querySelectorAll('input[name="question_ids"]');
+                updateSubmitButton();
+                
+                // Add event listeners to checkboxes
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', updateSubmitButton);
+                });
+            });
+    });
+    
+    function updateSubmitButton() {
+        const hasSelection = Array.from(checkboxes).some(cb => cb.checked);
+        submitBtn.disabled = !hasSelection;
+        submitBtn.classList.toggle('opacity-50', !hasSelection);
+    }
+    
+    function selectAllQuestions() {
+        checkboxes.forEach(cb => cb.checked = true);
+        updateSubmitButton();
+    }
+    
+    function deselectAllQuestions() {
+        checkboxes.forEach(cb => cb.checked = false);
+        updateSubmitButton();
+    }
+</script>
+{% endblock %}

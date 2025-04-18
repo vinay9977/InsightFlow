@@ -1,0 +1,335 @@
+{% extends 'djf_surveys/admins/master.html' %}
+{% load i18n static %}
+
+{% block extra_css %}
+    {{ chart_js_src|safe }}
+    <link rel="stylesheet" href="{% static 'djf_surveys/te-starter/css/tw-elements.min.css' %}">
+    <link rel="stylesheet" href="{% static 'djf_surveys/css/rating.css' %}"/>
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 1rem;
+        }
+        .chart-container-sm {
+            position: relative;
+            height: 250px;
+            margin-bottom: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="px-4">
+    <section>
+        <div class="py-6 lg:items-end justify-between flex">
+            <h2 class="max-w-xl text-2xl font-bold sm:text-3xl">
+                {% trans "Analytics" %}
+            </h2>
+        </div>
+    </section>
+    
+    <!-- Stats Overview Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <!-- Total Surveys -->
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-gray-500 text-sm">{% trans "Total Surveys" %}</p>
+                    <h3 class="text-3xl font-bold">{{ total_surveys }}</h3>
+                </div>
+                <div class="bg-blue-100 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                </div>
+            </div>
+            <div class="mt-4 flex space-x-2">
+                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">{% trans "Active" %}: {{ active_surveys }}</span>
+                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">{% trans "Scheduled" %}: {{ scheduled_surveys }}</span>
+                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">{% trans "Expired" %}: {{ expired_surveys }}</span>
+            </div>
+        </div>
+        
+        <!-- Total Responses -->
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-gray-500 text-sm">{% trans "Total Responses" %}</p>
+                    <h3 class="text-3xl font-bold">{{ total_responses }}</h3>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                    </svg>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">{% trans "Today" %}: {{ responses_today }}</span>
+            </div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-gray-500 text-sm">{% trans "Days Since Last Response" %}</p>
+                    <h3 class="text-3xl font-bold">{{ time_since_last|default:"--" }}</h3>
+                </div>
+                <div class="bg-purple-100 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Link Card -->
+        <div class="bg-gradient-to-r from-teal-500 to-teal-600 p-6 rounded-lg shadow-md text-white">
+            <h3 class="text-xl font-semibold mb-2">{% trans "Advanced Analytics" %}</h3>
+            <p class="text-sm opacity-80 mb-4">{% trans "Dive deeper into your survey data with our analytics tools." %}</p>
+            <a href="{% url 'djf_surveys:admin_analytics_dashboard' %}" class="inline-block px-4 py-2 bg-white text-teal-600 rounded-lg font-medium text-sm hover:bg-teal-50">
+                {% trans "Explore" %}
+            </a>
+        </div>
+    </div>
+    
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Daily Responses Chart -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <h3 class="text-lg font-semibold mb-4">{% trans "Response Trends (Last 30 Days)" %}</h3>
+            <div class="chart-container">
+                <canvas id="responsesTrendChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Top Surveys Chart -->
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <h3 class="text-lg font-semibold mb-4">{% trans "Top Surveys by Responses" %}</h3>
+            <div class="chart-container-sm">
+                <canvas id="topSurveysChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-8">
+        <h3 class="text-lg font-semibold mb-4">{% trans "Recent Activity" %}</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% trans "Survey" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% trans "User" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% trans "Time" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% trans "Action" %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for response in recent_responses %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ response.survey.name }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ response.user|default:"Anonymous" }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500">{{ response.created_at|date:"M d, Y H:i" }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <a href="{% url 'djf_surveys:detail_result' response.id %}" class="text-teal-600 hover:text-teal-900">
+                                {% trans "View" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                            {% trans "No recent activity" %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Survey Status Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Active Surveys -->
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <h3 class="text-lg font-semibold mb-4">{% trans "Active Surveys" %}</h3>
+            <div class="space-y-4">
+                {% for survey in top_surveys|slice:":3" %}
+                {% if survey.is_active %}
+                <div class="flex items-center justify-between border-b pb-2">
+                    <div>
+                        <p class="font-medium">{{ survey.name }}</p>
+                        <p class="text-xs text-gray-500">{{ survey.response_count }} {% trans "responses" %}</p>
+                    </div>
+                    <a href="{% url 'djf_surveys:admin_summary_survey' survey.slug %}" class="text-teal-600 hover:underline text-sm">
+                        {% trans "View Summary" %}
+                    </a>
+                </div>
+                {% endif %}
+                {% empty %}
+                <p class="text-gray-500 text-sm">{% trans "No active surveys" %}</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <h3 class="text-lg font-semibold mb-4">{% trans "Quick Actions" %}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="{% url 'djf_surveys:admin_create_survey' %}" class="block p-4 border rounded-lg hover:bg-gray-50">
+                    <div class="flex items-center">
+                        <div class="bg-teal-100 p-2 rounded-md mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                        </div>
+                        <span>{% trans "New Survey" %}</span>
+                    </div>
+                </a>
+                <a href="{% url 'djf_surveys:admin_survey' %}" class="block p-4 border rounded-lg hover:bg-gray-50">
+                    <div class="flex items-center">
+                        <div class="bg-green-100 p-2 rounded-md mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                            </svg>
+                        </div>
+                        <span>{% trans "All Surveys" %}</span>
+                    </div>
+                </a>
+                <a href="{% url 'djf_surveys:admin_analytics_dashboard' %}" class="block p-4 border rounded-lg hover:bg-gray-50">
+                    <div class="flex items-center">
+                        <div class="bg-purple-100 p-2 rounded-md mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <span>{% trans "Analytics" %}</span>
+                    </div>
+                </a>
+                {% if top_surveys %}
+                <a href="{% url 'djf_surveys:admin_download_survey' top_surveys.0.slug %}" class="block p-4 border rounded-lg hover:bg-gray-50">
+                    <div class="flex items-center">
+                        <div class="bg-yellow-100 p-2 rounded-md mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <span>{% trans "Export Data" %}</span>
+                    </div>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Response Trends Chart
+    const responsesCtx = document.getElementById('responsesTrendChart').getContext('2d');
+    const responsesTrendChart = new Chart(responsesCtx, {
+        type: 'line',
+        data: {
+            labels: [
+                {% for label in chart_data.date_labels %}
+                    '{{ label }}',
+                {% endfor %}
+            ],
+            datasets: [{
+                label: '{% trans "Daily Responses" %}',
+                data: [
+                    {% for value in chart_data.response_counts %}
+                        {{ value }},
+                    {% endfor %}
+                ],
+                borderColor: 'rgb(56, 135, 130)',
+                backgroundColor: 'rgba(56, 135, 130, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+    
+    // Top Surveys Chart
+    const topSurveysCtx = document.getElementById('topSurveysChart').getContext('2d');
+    const topSurveysChart = new Chart(topSurveysCtx, {
+        type: 'bar',
+        data: {
+            labels: [
+                {% for name in chart_data.top_survey_names %}
+                    '{{ name }}',
+                {% empty %}
+                    '{% trans "No Data" %}',
+                {% endfor %}
+            ],
+            datasets: [{
+                label: '{% trans "Responses" %}',
+                data: [
+                    {% for count in chart_data.top_survey_counts %}
+                        {{ count }},
+                    {% empty %}
+                        0,
+                    {% endfor %}
+                ],
+                backgroundColor: [
+                    'rgba(56, 135, 130, 0.8)',
+                    'rgba(56, 135, 130, 0.7)',
+                    'rgba(56, 135, 130, 0.6)',
+                    'rgba(56, 135, 130, 0.5)',
+                    'rgba(56, 135, 130, 0.4)'
+                ],
+                borderColor: [
+                    'rgb(56, 135, 130)',
+                    'rgb(56, 135, 130)',
+                    'rgb(56, 135, 130)',
+                    'rgb(56, 135, 130)',
+                    'rgb(56, 135, 130)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
