@@ -1,79 +1,94 @@
-Django Web Project - Survey Application
+# Django Web Project - Survey Application
 
 This is a Django-based web application designed for managing surveys. This README file provides instructions on cloning, installing, and running the project locally.
 
-Table of Contents
 
-Prerequisites
+## Table of Contents
 
-Clone the Repository
-
-Set Up the Environment
-
-Run the Application
-
-Project Structure
+1. Prerequisites
+2. Clone the Repository
+3. Set Up the Environment
+4. Run the Application
+5. Project Structure
 
 
-
-Prerequisites
+## Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
 
-Python 3.8 or higher
+- Python 3.8 or higher
+- Django (latest version recommended)
+- pip (Python package installer)
+- Virtualenv (optional but recommended)
 
-Django (latest version recommended)
 
-pip (Python package installer)
-
-Virtualenv (optional but recommended)
-
-Clone the Repository
+## Clone the Repository
 
 To clone the repository to your local machine, use the following command:
 
+```bash
 git clone <repository-url>
+```
 
-Replace <repository-url> with the actual URL of the project repository.
+Replace `<repository-url>` with the actual URL of the project repository.
 
-Set Up the Environment
+
+## Set Up the Environment
 
 Navigate to the Project Directory:
 
+```bash
 cd <project-folder>
+```
 
 Create a Virtual Environment (Optional):
 
+```bash
 python -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
+```
 
-Install Dependencies:
+
+## Install Dependencies:
+
 Install the required packages using pip:
 
+```bash
 pip install -r requirements.txt
+```
 
-Set Up the Database:
+## Set Up the Database:
+
 Apply database migrations:
 
+```bash
 python manage.py migrate
+```
 
 Create a Superuser (Admin):
+
 If required, create an admin user:
 
+```bash
 python manage.py createsuperuser
+```
 
 Run the Application
 
 To start the development server, run the following command:
 
+```bash
 python manage.py runserver
+```
 
-Open your browser and navigate to http://127.0.0.1:8000/ to view the application.
+Open your browser and navigate to http://localhost:8000/ to view the application.
 
-Project Structure
+
+## Project Structure
 
 A brief overview of the main project structure:
 
+```bash
 <project-folder>/
 ├── manage.py           # Entry point for running Django commands
 ├── survey/             # Main application folder
@@ -86,3 +101,4 @@ A brief overview of the main project structure:
 ├── db.sqlite3          # SQLite database (default, if used)
 ├── requirements.txt    # List of dependencies
 └── README.md           # Documentation
+```
