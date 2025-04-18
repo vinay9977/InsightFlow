@@ -1,85 +1,88 @@
-# InsightFlow: A User-Friendly Platform for Psychological Surveys
+Django Web Project - Survey Application
+
+This is a Django-based web application designed for managing surveys. This README file provides instructions on cloning, installing, and running the project locally.
+
+Table of Contents
+
+Prerequisites
+
+Clone the Repository
+
+Set Up the Environment
+
+Run the Application
+
+Project Structure
 
 
-## Introduction
 
-**InsightFlow** is a full-stack survey platform designed for creating, managing, and analyzing psychological surveys. Built with Django, it provides secure authentication, data collection, and reporting features for researchers and participants. This documentation is a quick guide to getting the project running locally.
+Prerequisites
 
-> **Note:** This project is currently in the initial stage of development and may undergo significant changes.
+Before you begin, ensure you have the following installed on your system:
 
-## Project Structure
+Python 3.8 or higher
 
-```
-/
-├── README.md                # Documentation
-├── survey/                  # Survey application
-├── authenticate/            # Authentication-related code
-├── db.sqlite3               # SQLite database
-├── manage.py                # Entry point for Django commands
-└── requirements.txt         # Project dependencies
-```
+Django (latest version recommended)
 
-## Prerequisites
+pip (Python package installer)
 
-- Python 3.10+
-- Django 5+
-- Pip
-- Virtualenv (optional)
+Virtualenv (optional but recommended)
 
-## Installation
+Clone the Repository
 
-1. Clone the Repository:
+To clone the repository to your local machine, use the following command:
 
-   ```bash
-   git clone https://github.com/vinay9977/InsightFlow.git
-   cd InsightFlow
-   ```
+git clone <repository-url>
 
-2. Set Up the Environment:
+Replace <repository-url> with the actual URL of the project repository.
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+Set Up the Environment
 
-3. Run the Development Server:
+Navigate to the Project Directory:
 
-   ```bash
-   python manage.py runserver
-   ```
+cd <project-folder>
 
-   Access the app at: `http://127.0.0.1:8000`. Use one of the test accounts below or create a new one.
+Create a Virtual Environment (Optional):
 
-## Test Accounts
+python -m venv venv
+source venv/bin/activate   # On Windows: venv\Scripts\activate
 
-| Account Type     | Username/Email   | Password   |
-|------------------|------------------|------------|
-| **Regular User** | test@gmail.com   | test       |
-| **Admin User**   | admintest        | admintest  |
+Install Dependencies:
+Install the required packages using pip:
 
-## Additional Options
+pip install -r requirements.txt
 
-- Database Migration:
+Set Up the Database:
+Apply database migrations:
 
-   ```bash
-   python manage.py migrate
-   ```
+python manage.py migrate
 
-- Create a Superuser:
+Create a Superuser (Admin):
+If required, create an admin user:
 
-   ```bash
-   python manage.py createsuperuser
-   ```
+python manage.py createsuperuser
 
-## Running Tests (incomplete!)
+Run the Application
 
-To run the automated test suite:
+To start the development server, run the following command:
 
-```bash
-python manage.py test djf_surveys
-```
+python manage.py runserver
 
-## License
+Open your browser and navigate to http://127.0.0.1:8000/ to view the application.
 
-This project is licensed under the [MIT License](LICENSE).
+Project Structure
+
+A brief overview of the main project structure:
+
+<project-folder>/
+├── manage.py           # Entry point for running Django commands
+├── survey/             # Main application folder
+│   ├── settings.py     # Application settings
+│   ├── urls.py         # URL configuration
+│   ├── wsgi.py         # WSGI configuration
+│   └── ...             # Other application modules
+├── templates/          # HTML templates (if applicable)
+├── static/             # Static files (CSS, JavaScript, etc.)
+├── db.sqlite3          # SQLite database (default, if used)
+├── requirements.txt    # List of dependencies
+└── README.md           # Documentation
