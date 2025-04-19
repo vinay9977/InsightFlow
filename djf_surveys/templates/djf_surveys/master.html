@@ -1,0 +1,44 @@
+<!doctype html>
+{% load i18n static %}
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Survey" %} - {{ title }}</title>
+    <script src="{% static 'djf_surveys/css/tailwindcss-3.3.1.js' %}"></script>
+    <script src="{% static 'djf_surveys/css/tailwindcss-plugin-3.3.1.js' %}"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="{% static 'djf_surveys/js/countdown.js' %}"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    {% include 'djf_surveys/components/header_nav2.html' %}
+
+    {% if messages %}
+    {% for message in messages %}
+    {% include 'djf_surveys/components/alert.html' %}
+    {% endfor %}
+    {% endif %}
+    <div class="w3-sidebar w3-bar-block" style="width:15%; background-color: rgb(56, 135, 130);">
+        <a style="font-size: x-large;background-color: white;margin-top: 20px;" class="w3-bar-item w3-button">
+            <i class="fa fa-home " style="background-color: white;font-size: xx-large;" aria-hidden="true"></i> Home
+        </a>
+        <a href="/dashboard" style="font-size: x-large;margin-top: 20px;" class="w3-bar-item w3-button">
+            <i class="fa fa-tasks" style="background-color: white;font-size: xx-large;" aria-hidden="true"></i> Survey
+        </a>
+    </div>
+    <div style="margin-left:15%">
+        <div class="container mx-auto">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+
+
+    {% include 'djf_surveys/components/alert_js.html' %}
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
