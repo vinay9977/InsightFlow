@@ -21,7 +21,7 @@ This document provides comprehensive instructions for deploying and maintaining 
 1. Open a Bash console from the Consoles tab
 2. Clone the repository:
    ```
-   git clone https://chunp01-admin@bitbucket.org/korrv01/survey_metrics.git ~/survey_metrics_app
+   git clone https://github.com/vinay9977/InsightFlow.git
    ```
 3. Set up virtual environment:
    ```
@@ -49,7 +49,7 @@ This document provides comprehensive instructions for deploying and maintaining 
    SECRET_KEY = 'generate-a-new-secret-key-and-put-it-here'
 
    # Allow your PythonAnywhere domain
-   ALLOWED_HOSTS = ['prudhvi19.pythonanywhere.com']
+   ALLOWED_HOSTS = ['Vinay77.pythonanywhere.com']
 
    # Security settings
    SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -57,7 +57,7 @@ This document provides comprehensive instructions for deploying and maintaining 
    X_FRAME_OPTIONS = 'DENY'
 
    # Static files
-   STATIC_ROOT = '/home/prudhvi19/survey_metrics_app/static'
+   STATIC_ROOT = '/home/Vinay77/survey_metrics_app/survey/staticfiles'
    STATIC_URL = '/static/'
 
    # SQLite database configuration (will be replaced in User Story 2)
@@ -90,7 +90,7 @@ This document provides comprehensive instructions for deploying and maintaining 
    import sys
 
    # Add the project directory to the system path
-   path = '/home/prudhvi19/survey_metrics_app/survey'
+   path = '/home/Vinay77/survey_metrics_app/survey'
    if path not in sys.path:
        sys.path.insert(0, path)
 
@@ -107,7 +107,7 @@ This document provides comprehensive instructions for deploying and maintaining 
 1. In the "Web" tab, go to the "Static files" section
 2. Add a new static files mapping:
    - URL: `/static/`
-   - Directory: `/home/prudhvi19/survey_metrics_app/static`
+   - Directory: `/home/Vinay77/survey_metrics_app/survey/staticfiles`
 3. Collect static files:
    ```
    cd ~/survey_metrics_app/survey
@@ -116,8 +116,8 @@ This document provides comprehensive instructions for deploying and maintaining 
 
 ### Finalize Deployment
 1. Go to the "Web" tab and click the "Reload" button for your web app
-2. Visit your site at prudhvi19.pythonanywhere.com
-3. Log in to the admin interface at prudhvi19.pythonanywhere.com/admin
+2. Visit your site at Vinay77.pythonanywhere.com
+3. Log in to the admin interface at Vinay77.pythonanywhere.com/admin
 
 ## Updating the Application
 
