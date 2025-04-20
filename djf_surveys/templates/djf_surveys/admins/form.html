@@ -1,0 +1,65 @@
+{% extends 'djf_surveys/admins/master.html' %}
+{% load djf_survey_tags i18n %}
+
+{% block content %}
+    <div class="max-w-screen-xl px-4 py-16 mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-lg mx-auto">
+            <h1 class="text-2xl font-bold text-center text-blue-500 sm:text-3xl">{{ title_page }}</h1>
+
+            <p class="max-w-md mx-auto mt-4 text-center text-gray-500">
+                {{ sub_title_page }}
+            </p>
+
+            <div class="p-8 mt-6 mb-0 space-y-4 rounded-lg shadow-md border border-gray-200 bg-white">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        {% if field.name != 'start_date' and field.name != 'end_date' %}
+                            <div class="mb-5" id="section_field_{{ field.auto_id }}">
+                                <label for="email" class="text-base font-medium">{{ field.label }}</label>
+                                <div class="mt-1">
+                                    {% if field.field.widget.input_type == 'radio' or field.field.widget.input_type == 'checkbox' %}
+                                        {{ field }}
+                                    {% else %}
+                                        {{ field|addclass:'w-full p-4 pr-12 text-sm border-gray-500 rounded-lg shadow-sm' }}
+                                    {% endif %}
+                                </div>
+                                <p class="text-xs text-gray-400 mt-2">{{ field.help_text }}</p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if 'start_date' in form.fields and 'end_date' in form.fields %}
+                        <div class="mb-5">
+                            <h3 class="text-lg font-medium text-gray-900 mb-3">{% trans "Survey Schedule" %}</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Field for start_date -->
+                                <div id="section_field_{{ form.start_date.auto_id }}">
+                                    <label for="{{ form.start_date.auto_id }}" class="text-base font-medium">{{ form.start_date.label }}</label>
+                                    <div class="mt-1">
+                                        {{ form.start_date|addclass:'w-full p-4 pr-12 text-sm border-gray-500 rounded-lg shadow-sm' }}
+                                    </div>
+                                    <p class="text-xs text-gray-400 mt-2">{{ form.start_date.help_text }}</p>
+                                </div>
+                                
+                                <!-- Field for end_date -->
+                                <div id="section_field_{{ form.end_date.auto_id }}">
+                                    <label for="{{ form.end_date.auto_id }}" class="text-base font-medium">{{ form.end_date.label }}</label>
+                                    <div class="mt-1">
+                                        {{ form.end_date|addclass:'w-full p-4 pr-12 text-sm border-gray-500 rounded-lg shadow-sm' }}
+                                    </div>
+                                    <p class="text-xs text-gray-400 mt-2">{{ form.end_date.help_text }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <button type="submit" class="block w-full mt-5 px-5 py-3 text-sm font-medium text-white bg-blue-500 rounded-lg">
+                        {% trans "Submit" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
