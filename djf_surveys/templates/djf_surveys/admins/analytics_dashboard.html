@@ -1,0 +1,554 @@
+{% extends 'djf_surveys/admins/master.html' %}
+{% load i18n static %}
+
+{% block extra_css %}
+    {{ chart_js_src|safe }}
+    <link rel="stylesheet" href="{% static 'djf_surveys/te-starter/css/tw-elements.min.css' %}">
+    <link rel="stylesheet" href="{% static 'djf_surveys/css/rating.css' %}"/>
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 1rem;
+        }
+        .chart-container-sm {
+            position: relative;
+            height: 250px;
+            margin-bottom: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container px-5 py-5">
+    <section>
+        <div class="py-6 lg:items-end justify-between flex">
+            <h2 class="max-w-xl text-2xl font-bold sm:text-3xl">
+                {% trans "Analytics Dashboard" %}
+            </h2>
+            
+            <a href="{% url 'djf_surveys:admin_dashboard' %}" class="inline-block px-5 py-3 mt-4 font-medium text-white bg-blue-500 rounded-lg sm:m-0">
+                {% trans "Back to Dashboard" %}
+            </a>
+        </div>
+    </section>
+    
+    <!-- Filters Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-8">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Survey Selection -->
+            <div>
+                <label for="survey_id" class="block text-sm font-medium text-gray-700 mb-1">{% trans "Select Survey" %}</label>
+                <select id="survey_id" name="survey_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <option value="">{% trans "All Surveys" %}</option>
+                    {% for survey in all_surveys %}
+                    <option value="{{ survey.id }}" {% if selected_survey.id == survey.id %}selected{% endif %}>{{ survey.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Date Range Selection -->
+            <div>
+                <label for="date_range" class="block text-sm font-medium text-gray-700 mb-1">{% trans "Date Range" %}</label>
+                <select id="date_range" name="date_range" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <option value="7" {% if date_range == '7' %}selected{% endif %}>{% trans "Last 7 Days" %}</option>
+                    <option value="30" {% if date_range == '30' %}selected{% endif %}>{% trans "Last 30 Days" %}</option>
+                    <option value="90" {% if date_range == '90' %}selected{% endif %}>{% trans "Last 90 Days" %}</option>
+                    <option value="365" {% if date_range == '365' %}selected{% endif %}>{% trans "Last Year" %}</option>
+                </select>
+            </div>
+            
+            <!-- Apply Button -->
+            <div class="flex items-end">
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    {% trans "Apply Filters" %}
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Stats Overview Card -->
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Total Responses -->
+            <div class="text-center">
+                <p class="text-gray-500 text-sm">{% trans "Total Responses" %}</p>
+                <h3 class="text-3xl font-bold">{{ total_responses }}</h3>
+            </div>
+            
+            <!-- Other analytics stats can be added here -->
+        </div>
+    </div>
+    
+    <!-- Key Insights Card -->
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-8">
+        <h3 class="text-lg font-semibold mb-4">{% trans "Key Insights" %}</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Overall Completion Rate -->
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <div class="bg-blue-100 p-2 rounded-full mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">{% trans "Completion Rate" %}</p>
+                        <p class="text-lg font-medium">{{ completion_data.values.0|default:"0" }}%</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Most Engaging Question -->
+            {% if question_stats %}
+            {% with highest_engagement=question_stats|dictsort:"completion_rate"|last %}
+            <div class="bg-green-50 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <div class="bg-green-100 p-2 rounded-full mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">{% trans "Most Engaging Question" %}</p>
+                        <p class="text-lg font-medium truncate" title="{{ highest_engagement.question.label }}">
+                            {{ highest_engagement.question.label|truncatechars:20 }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endwith %}
+            {% endif %}
+            
+            <!-- Needs Attention -->
+            {% if question_stats %}
+            {% with lowest_engagement=question_stats|dictsort:"completion_rate"|first %}
+            <div class="bg-red-50 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <div class="bg-red-100 p-2 rounded-full mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">{% trans "Needs Improvement" %}</p>
+                        <p class="text-lg font-medium truncate" title="{{ lowest_engagement.question.label }}">
+                            {{ lowest_engagement.question.label|truncatechars:20 }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endwith %}
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Time Series Chart -->
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-8">
+        <h3 class="text-lg font-semibold mb-4">{% trans "Response Trends" %}</h3>
+        <div class="chart-container">
+            <canvas id="timeSeriesChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Question Performance Analysis -->
+    {% if question_stats %}
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-8">
+        <h3 class="text-lg font-semibold mb-4">{% trans "Question Performance" %}</h3>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% trans "Question" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% trans "Completion Rate" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% trans "Type" %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for stat in question_stats %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-normal">
+                            <div class="text-sm text-gray-900">{{ stat.question.label|truncatechars:40 }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                                <div class="{% if stat.completion_rate >= 80 %}bg-green-500{% elif stat.completion_rate >= 50 %}bg-yellow-500{% else %}bg-red-500{% endif %} h-2.5 rounded-full" style="width: {{ stat.completion_rate }}%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500">{{ stat.completion_rate|floatformat:1 }}%</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                {{ stat.question.get_type_field_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+            {% for stat in question_stats %}
+            {% if stat.answer_distribution %}
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h4 class="text-sm font-medium mb-2 truncate">{{ stat.question.label }}</h4>
+                <div style="height: 200px; position: relative;">
+                    <canvas id="questionChart{{ forloop.counter }}"></canvas>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Text Response Analysis -->
+    {% if text_analysis %}
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-8">
+        <h3 class="text-lg font-semibold mb-4">{% trans "Text Response Analysis" %}</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for analysis in text_analysis %}
+            <div class="bg-gray-50 p-5 rounded-lg">
+                <h4 class="text-md font-medium mb-3 truncate">{{ analysis.question.label }}</h4>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span>{% trans "Average Words" %}</span>
+                        <span class="font-medium">{{ analysis.avg_words|floatformat:1 }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>{% trans "Average Characters" %}</span>
+                        <span class="font-medium">{{ analysis.avg_chars|floatformat:1 }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>{% trans "Response Quality" %}</span>
+                        <span class="font-medium">
+                            {% if analysis.avg_words >= 50 %}
+                                <span class="text-green-600">{% trans "Excellent" %}</span>
+                            {% elif analysis.avg_words >= 25 %}
+                                <span class="text-blue-600">{% trans "Good" %}</span>
+                            {% elif analysis.avg_words >= 10 %}
+                                <span class="text-yellow-600">{% trans "Fair" %}</span>
+                            {% else %}
+                                <span class="text-red-600">{% trans "Brief" %}</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Response Timing Analysis -->
+    {% if time_of_day_data.labels %}
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-8">
+        <h3 class="text-lg font-semibold mb-4">{% trans "Response Timing Analysis" %}</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <div class="chart-container-sm">
+                    <canvas id="timeOfDayChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-5 rounded-lg flex flex-col justify-center">
+                <h4 class="text-md font-medium mb-3">{% trans "When Users Respond" %}</h4>
+                
+                {% if peak_hour %}
+                <div class="flex items-center mb-4">
+                    <div class="bg-blue-100 p-3 rounded-full mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">{% trans "Peak Response Hour" %}</p>
+                        <p class="text-xl font-medium">
+                            {% if peak_hour < 12 %}
+                                {{ peak_hour }}:00 AM
+                            {% elif peak_hour == 12 %}
+                                12:00 PM
+                            {% else %}
+                                {{ peak_hour|add:"-12" }}:00 PM
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="text-sm text-gray-600">
+                    <p>{% trans "Understanding when users typically respond can help you time survey invitations and reminders for maximum engagement." %}</p>
+                </div>
+                {% else %}
+                <p class="text-sm text-gray-500">{% trans "Not enough data to determine peak response time." %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Two-Column Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Cross-Question Analysis -->
+        {% if cross_question_data.labels %}
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <h3 class="text-lg font-semibold mb-4">{% trans "Cross-Question Analysis" %}</h3>
+            <p class="text-sm text-gray-500 mb-4">{{ cross_question_data.title }}</p>
+            <div class="chart-container-sm">
+                <canvas id="crossQuestionChart"></canvas>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Completion Rate Analysis -->
+        {% if completion_data.labels %}
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <h3 class="text-lg font-semibold mb-4">{% trans "Completion Rates" %}</h3>
+            <div class="chart-container-sm">
+                <canvas id="completionChart"></canvas>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- No Data Placeholder -->
+    {% if not total_responses %}
+    <div class="bg-white p-10 rounded-lg shadow-md border border-gray-200 mb-8 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <h3 class="text-xl font-medium text-gray-900 mb-2">{% trans "No Data Available" %}</h3>
+        <p class="text-gray-500">{% trans "Try adjusting your filters or select a different survey." %}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% if time_series.labels %}
+    // Time Series Chart
+    const timeSeriesCtx = document.getElementById('timeSeriesChart').getContext('2d');
+    const timeSeriesChart = new Chart(timeSeriesCtx, {
+        type: 'line',
+        data: {
+            labels: {{ time_series.labels|safe }},
+            datasets: [{
+                label: '{% trans "Responses" %}',
+                data: {{ time_series.values|safe }},
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 2,
+                tension: 0.3,
+                pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+    {% endif %}
+    
+    {% if cross_question_data.labels %}
+    // Cross-Question Analysis Chart
+    const crossQuestionCtx = document.getElementById('crossQuestionChart').getContext('2d');
+    const crossQuestionChart = new Chart(crossQuestionCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ cross_question_data.labels|safe }},
+            datasets: [{
+                label: '{% trans "Average Rating" %}',
+                data: {{ cross_question_data.values|safe }},
+                backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5 // Assuming rating scale of 1-5
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+    {% endif %}
+    
+    {% if completion_data.labels %}
+    // Completion Rate Chart
+    const completionCtx = document.getElementById('completionChart').getContext('2d');
+    const completionChart = new Chart(completionCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ completion_data.labels|safe }},
+            datasets: [{
+                data: {{ completion_data.values|safe }},
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.8)',  // Complete - Green
+                    'rgba(245, 158, 11, 0.8)',  // Partial - Orange
+                    'rgba(239, 68, 68, 0.8)'    // Minimal - Red
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    {% endif %}
+    
+    {% for question_label, chart_data in demographic_data.items %}
+    // Demographic Chart {{ forloop.counter }}
+    const demographicCtx{{ forloop.counter }} = document.getElementById('demographicChart{{ forloop.counter }}').getContext('2d');
+    const demographicChart{{ forloop.counter }} = new Chart(demographicCtx{{ forloop.counter }}, {
+        type: 'pie',
+        data: {
+            labels: {{ chart_data.labels|safe }},
+            datasets: [{
+                data: {{ chart_data.values|safe }},
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.8)',
+                    'rgba(16, 185, 129, 0.8)',
+                    'rgba(245, 158, 11, 0.8)',
+                    'rgba(236, 72, 153, 0.8)',
+                    'rgba(139, 92, 246, 0.8)',
+                    'rgba(75, 85, 99, 0.8)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12
+                    }
+                }
+            }
+        }
+    });
+    {% endfor %}
+
+    {% if time_of_day_data.labels %}
+    // Time of Day Chart
+    const timeOfDayCtx = document.getElementById('timeOfDayChart').getContext('2d');
+    const timeOfDayLabels = [
+        {% for hour in time_of_day_data.labels %}
+            '{% if hour < 12 %}{{ hour }}:00 AM{% elif hour == 12 %}12:00 PM{% else %}{{ hour|add:"-12" }}:00 PM{% endif %}',
+        {% endfor %}
+    ];
+    const timeOfDayChart = new Chart(timeOfDayCtx, {
+        type: 'bar',
+        data: {
+            labels: timeOfDayLabels,
+            datasets: [{
+                label: '{% trans "Responses" %}',
+                data: {{ time_of_day_data.values|safe }},
+                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: '{% trans "Responses by Time of Day" %}'
+                }
+            }
+        }
+    });
+    {% endif %}
+
+    {% for stat in question_stats %}
+    {% if stat.answer_distribution %}
+    // Question Distribution Chart {{ forloop.counter }}
+    const questionCtx{{ forloop.counter }} = document.getElementById('questionChart{{ forloop.counter }}').getContext('2d');
+    const questionChart{{ forloop.counter }} = new Chart(questionCtx{{ forloop.counter }}, {
+        type: 'pie',
+        data: {
+            labels: {{ stat.answer_distribution.labels|safe }},
+            datasets: [{
+                data: {{ stat.answer_distribution.values|safe }},
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.8)',
+                    'rgba(16, 185, 129, 0.8)',
+                    'rgba(245, 158, 11, 0.8)',
+                    'rgba(236, 72, 153, 0.8)',
+                    'rgba(139, 92, 246, 0.8)',
+                    'rgba(75, 85, 99, 0.8)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 10,
+                        font: {
+                            size: 10
+                        }
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+    {% endfor %}
+});
+</script>
+{% endblock %}
