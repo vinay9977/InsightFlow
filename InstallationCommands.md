@@ -23,7 +23,7 @@ cd <directory-name>
 ```bash
 python -m pip install Django
 ```
-
+Apply Migrations : python manage.py migrate  
 ### Step 4: Run the Development Server
 ```bash
 python manage.py runserver
