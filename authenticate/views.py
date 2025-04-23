@@ -18,51 +18,85 @@ def validate_password_complexity(password):
     Validates password complexity requirements
     Returns (bool, str) tuple - (is_valid, error_message)
     """
+    errors = []
+    
     if len(password) < 8:
-        return False, "Password must be at least 8 characters long"
+        errors.append("8 characters")
     
     if not re.search(r'[A-Z]', password):
-        return False, "Password must include at least one uppercase letter"
+        errors.append("an uppercase letter")
     
     if not re.search(r'[a-z]', password):
-        return False, "Password must include at least one lowercase letter"
+        errors.append("a lowercase letter")
     
     if not re.search(r'\d', password):
-        return False, "Password must include at least one number"
+        errors.append("a number")
     
     if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-        return False, "Password must include at least one special character"
+        errors.append("a special character")
+    
+    if errors:
+        return False, "Password must include at least:<br>- " + "<br>- ".join(errors)
     
     return True, ""
 
 def register(request):
     if request.method == 'POST':
-        # Validate required fields
-        required_fields = ['fname', 'lname', 'email', 'cpass', 'cnpass']
-        if not all(request.POST.get(field) for field in required_fields):
-            return render(request, 'signup.html', {"error": "All fields are required"})
-
-        # Validate email format
+        # Get form data
+        form_data = {
+            'fname': request.POST.get('fname', ''),
+            'lname': request.POST.get('lname', ''),
+            'email': request.POST.get('email', ''),
+            'mno': request.POST.get('mno', '')
+        }
+        
+        # Collect all validation errors
+        errors = []
+        
+        # Validate required fields - we now handle this more specifically
+        # and with client-side validation, so no generic message needed
+        
+        # Validate email format if provided
         email = request.POST.get("email")
-        if '@' not in email or '.' not in email:
-            return render(request, 'signup.html', {"error": "Invalid email format"})
-
-        # Check if email exists
-        if User.objects.filter(email=email).exists():
-            return render(request, 'signup.html', {"error": "Email already exists"})
-
+        if email:
+            if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+                errors.append("Invalid email format")
+            
+            # Check if email exists
+            elif User.objects.filter(email=email).exists():
+                errors.append("Email already exists")
+        
+        # Validate password if provided
         password = request.POST.get("cpass")
         confirm_password = request.POST.get("cnpass")
-
-        # Validate password complexity
-        is_valid, error_message = validate_password_complexity(password)
-        if not is_valid:
-            return render(request, 'signup.html', {"error": error_message})
-
-        # Check if passwords match - Updated error message to match test case
-        if password != confirm_password:
-            return render(request, 'signup.html', {"error": "Password doesn't match"})
-
+        
+        if password:
+            # Validate password complexity
+            is_valid, error_message = validate_password_complexity(password)
+            if not is_valid:
+                errors.append(error_message)
+            
+            # Check if passwords match
+            if confirm_password and password != confirm_password:
+                errors.append("Passwords don't match")
+        
+        # If there are any validation errors, show them all
+        if errors:
+            # If there's only a password error, just show that with its formatting
+            if len(errors) == 1 and "Password must include" in errors[0]:
+                return render(request, 'signup.html', {
+                    "error": errors[0], 
+                    **form_data
+                })
+            # Otherwise combine with semicolons
+            else:
+                error_message = "; ".join(errors)
+                return render(request, 'signup.html', {
+                    "error": error_message, 
+                    **form_data
+                })
+        
+        # If all validation passes, create the user
         try:
             User.objects.create_user(
                 first_name=request.POST.get("fname"),
@@ -73,7 +107,7 @@ def register(request):
             )
             return HttpResponseRedirect('/login/')
         except Exception as e:
-            return render(request, 'signup.html', {"error": str(e)})
+            return render(request, 'signup.html', {"error": str(e), **form_data})
             
     return render(request, 'signup.html')
 

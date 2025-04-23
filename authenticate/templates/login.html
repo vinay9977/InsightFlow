@@ -1,78 +1,92 @@
-<!-- <!doctype html>
+<!doctype html>
+{% load static %}
 <html lang="en">
   <head>
-    <title>Login</title>
+    <title>Login | Survey Metrics</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{% static 'djf_surveys/css/tailwindcss-3.3.1.js' %}"></script>
+    <script src="{% static 'djf_surveys/css/tailwindcss-plugin-3.3.1.js' %}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
-  <body>
-      <div class="container mt-5">
-        <div class="row mt-5">
-            <div class="col"></div>
-            <div class="col mt-5">
-                <form action="{% url 'auth-user' %}" method="post" class="form-group border p-4">
+  <body class="bg-gray-50">
+    <!-- Header with logo -->
+    <nav class="bg-white shadow-lg">
+        <div class="w-full px-4">
+            <div class="flex justify-between">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center py-4">
+                        <span class="font-bold text-teal-600 text-lg">Survey Metrics</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-16">
+        <div class="max-w-md mx-auto">
+            <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold text-center text-teal-500 mb-6">Login</h2>
+                
+                <form action="{% url 'auth-user' %}" method="post">
                     {% csrf_token %}
+                    
                     {% if error %}
-                    <div class="alert alert-warning">{{error}}</div>
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ error }}</span>
+                    </div>
                     {% endif %}
+                    
                     {% if messages %}
                     {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ message }}</span>
+                    </div>
                     {% endfor %}
                     {% endif %}
-                    <input type="text" name="username" class="form-control border-dark border my-4" placeholder="Email or Phone Number" value="{{ email }}">
-                    <input type="password" name="password" class="form-control border-dark border my-4" placeholder="Password">
-                    <input type="submit" class="form-control my-4" value="Login" style="color: white; background-color: cadetblue;">
-                    <center><a href="{% url 'password_reset' %}" style="color: cadetblue; font-weight: bold; font-size: small;">Forgot password?</a></center>
-                    <hr style="height:1px;border-width:0;color:gray;background-color:gray"/>
+                    
+                    <div class="mb-4">
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="text" 
+                               id="username" 
+                               name="username" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent" 
+                               placeholder="Enter your email" 
+                               value="{{ email|default:'' }}">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" 
+                               id="password" 
+                               name="password" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent" 
+                               placeholder="Enter your password">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <button type="submit" class="w-full py-2 px-4 bg-teal-500 text-white font-semibold rounded-lg hover:bg-teal-600 transition-colors">
+                            Login
+                        </button>
+                    </div>
+                    
                     <div class="text-center">
-                        <span style="font-size: smaller; font-weight: bold; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Don't have account?</span> 
-                        <a href="{% url 'register' %}" style="font-size: smaller; font-weight: bold;">Sign up</a>
+                        <a href="{% url 'password_reset' %}" class="text-teal-600 hover:text-teal-800 text-sm font-medium">
+                            Forgot password?
+                        </a>
                     </div>
                 </form>
+                
+                <div class="mt-6 pt-6 border-t border-gray-200 text-center">
+                    <p class="text-sm text-gray-600">
+                        Don't have an account? 
+                        <a href="{% url 'register' %}" class="text-teal-600 hover:text-teal-800 font-medium">
+                            Sign up
+                        </a>
+                    </p>
+                </div>
             </div>
-            <div class="col"></div>
         </div>
-      </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  </body>
-</html> -->
-
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>Login</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  </head>
-  <body>
-      <div class="container mt-5">
-        <div class="row mt-5">
-            <div class="col"></div>
-            <div class="col mt-5">
-                <form action="{% url 'auth-user' %}" method="post" class="form-group border p-4">
-                    {% csrf_token %}
-                    <span class="badge bg-warning text-dark">{{error}}</span>
-                    <input type="text" name="username" class="form-control border-dark border my-4" placeholder="Email or Phone Number" {% if email %}value="{{ email }}"{% endif %}>
-                    <input type="password" name="password" class="form-control border-dark border my-4" placeholder="Password">
-                    <input type="submit" class="form-control my-4" value="Login" style="color: white; background-color: cadetblue;">
-                    <center><a href="{% url 'password_reset' %}" style="color: cadetblue; font-weight: bold; font-size: small;">Forgot password?</a></center>
-                    <hr style="height:1px;border-width:0;color:gray;background-color:gray"/>
-                    <div class="text-center">
-                        <span style="font-size: smaller; font-weight: bold; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Don't have account?</span> 
-                        <a href="{% url 'register' %}" style="font-size: smaller; font-weight: bold;">Sign up</a>
-                    </div>
-                </form>
-            </div>
-            <div class="col"></div>
-        </div>
-      </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </div>
   </body>
 </html>

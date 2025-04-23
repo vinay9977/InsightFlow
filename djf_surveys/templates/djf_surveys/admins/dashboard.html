@@ -26,10 +26,6 @@
             <h2 class="max-w-xl text-2xl font-bold sm:text-3xl">
                 {% trans "Dashboard" %}
             </h2>
-            
-            <a href="{% url 'djf_surveys:admin_create_survey' %}" class="inline-block px-5 py-3 mt-4 font-medium text-white bg-blue-500 rounded-lg sm:m-0">
-                {% trans "Create Survey" %}
-            </a>
         </div>
     </section>
     
@@ -42,13 +38,13 @@
                     <p class="text-gray-500 text-sm">{% trans "Total Surveys" %}</p>
                     <h3 class="text-3xl font-bold">{{ total_surveys }}</h3>
                 </div>
-                <div class="bg-blue-100 p-3 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="bg-teal-100 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                 </div>
             </div>
-            <div class="mt-4 flex space-x-2">
+            <div class="mt-4 flex flex-wrap gap-2">
                 <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">{% trans "Active" %}: {{ active_surveys }}</span>
                 <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">{% trans "Scheduled" %}: {{ scheduled_surveys }}</span>
                 <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">{% trans "Expired" %}: {{ expired_surveys }}</span>
@@ -150,7 +146,7 @@
                             <div class="text-sm text-gray-500">{{ response.created_at|date:"M d, Y H:i" }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{% url 'djf_surveys:detail_result' response.id %}" class="text-blue-600 hover:text-blue-900">
+                            <a href="{% url 'djf_surveys:detail_result' response.id %}" class="text-teal-600 hover:text-teal-900">
                                 {% trans "View" %}
                             </a>
                         </td>
@@ -180,7 +176,7 @@
                         <p class="font-medium">{{ survey.name }}</p>
                         <p class="text-xs text-gray-500">{{ survey.response_count }} {% trans "responses" %}</p>
                     </div>
-                    <a href="{% url 'djf_surveys:admin_summary_survey' survey.slug %}" class="text-blue-600 hover:underline text-sm">
+                    <a href="{% url 'djf_surveys:admin_summary_survey' survey.slug %}" class="text-teal-600 hover:underline text-sm">
                         {% trans "View Summary" %}
                     </a>
                 </div>
@@ -197,8 +193,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <a href="{% url 'djf_surveys:admin_create_survey' %}" class="block p-4 border rounded-lg hover:bg-gray-50">
                     <div class="flex items-center">
-                        <div class="bg-blue-100 p-2 rounded-md mr-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="bg-teal-100 p-2 rounded-md mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                             </svg>
                         </div>

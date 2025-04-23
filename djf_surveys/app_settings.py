@@ -54,7 +54,7 @@ if hasattr(settings, 'SURVEY_PAGINATION_NUMBER'):
 SURVEY_PAGINATION_NUMBER = number_of_pagination
 
 # override group url for admin
-SURVEYS_ADMIN_BASE_PATH = "dashboard/"
+SURVEYS_ADMIN_BASE_PATH = "survey/"
 
 # allow anonymous view of survey list
 SURVEY_ANONYMOUS_VIEW_LIST = settings.SURVEY_ANONYMOUS_VIEW_LIST \

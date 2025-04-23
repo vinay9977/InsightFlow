@@ -1,6 +1,6 @@
-# Django Web Project - Survey Application
+# InsightFlow - Survey Application
 
-This is a Django-based web application designed for managing surveys. This README file provides instructions on cloning, installing, and running the project locally.
+InsightFlow is a Django-based web application designed for managing surveys. This README file provides instructions on cloning, installing, and running the project locally.
 
 
 ## Table of Contents
@@ -65,9 +65,7 @@ Apply database migrations:
 python manage.py migrate
 ```
 
-Create a Superuser (Admin):
-
-If required, create an admin user:
+If needed, create an admin user:
 
 ```bash
 python manage.py createsuperuser
