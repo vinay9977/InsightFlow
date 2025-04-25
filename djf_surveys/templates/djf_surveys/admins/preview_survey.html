@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="{% static 'djf_surveys/css/rating.css' %}"/>
     <style>
         .preview-banner {
-            background-color: #FFD700;
-            color: #000;
+            background-color: #4fd1c5;
+            color: #fff;
             text-align: center;
             padding: 10px;
             font-weight: bold;
@@ -18,7 +18,7 @@
             z-index: 10;
         }
         .preview-outline {
-            border: 3px dashed #FFD700;
+            border: 3px dashed #4fd1c5;
             border-radius: 8px;
             padding: 20px;
         }
@@ -33,7 +33,7 @@
         </div>
         
         <div class="max-w-lg mx-auto preview-outline">
-            <h1 class="text-2xl font-bold text-center text-blue-500 sm:text-3xl">{{ title_page }}</h1>
+            <h1 class="text-2xl font-bold text-center text-teal-500 sm:text-3xl">{{ title_page }}</h1>
 
             <p class="max-w-md mx-auto mt-4 text-center text-gray-500">
                 {{ sub_title_page }}
@@ -57,14 +57,14 @@
                     </div>
                 {% endfor %}
 
-                <button type="submit" class="block w-full mt-5 px-5 py-3 text-sm font-medium text-white bg-blue-500 rounded-lg">
+                <button type="submit" class="block w-full mt-5 px-5 py-3 text-sm font-medium text-white bg-teal-400 rounded-lg hover:bg-teal-600 hover:text-white transition-colors">
                     {% trans "Submit (Preview)" %}
                 </button>
             </form>
         </div>
         
         <div class="mt-8 text-center">
-            <a href="{% url 'djf_surveys:admin_forms_survey' object.slug %}" class="px-5 py-3 text-sm font-medium text-white bg-gray-500 rounded-lg inline-block">
+            <a href="{% url 'djf_surveys:admin_forms_survey' object.slug %}" class="px-5 py-3 text-sm font-medium text-white bg-gray-500 rounded-lg inline-block hover:bg-gray-600 transition-colors">
                 {% trans "Exit Preview Mode" %}
             </a>
         </div>

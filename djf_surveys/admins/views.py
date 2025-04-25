@@ -435,7 +435,7 @@ class AdminDashboardView(ContextTitleMixin, TemplateView):
 @method_decorator(staff_member_required, name='dispatch')
 class AdminAnalyticsDashboardView(ContextTitleMixin, TemplateView):
     template_name = 'djf_surveys/admins/analytics_dashboard.html'
-    title_page = _("Analytics Dashboard")
+    title_page = _("Analytics")
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

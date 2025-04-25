@@ -8,37 +8,269 @@
     <title>{% trans "Survey" %} - {{ title }}</title>
     <script src="{% static 'djf_surveys/css/tailwindcss-3.3.1.js' %}"></script>
     <script src="{% static 'djf_surveys/css/tailwindcss-plugin-3.3.1.js' %}"></script>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="{% static 'djf_surveys/js/countdown.js' %}"></script>
     {% block extra_css %}{% endblock %}
+    <style>
+        /* Sidebar states */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 30;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar-collapsed {
+            width: 0;
+        }
+        
+        .sidebar-expanded {
+            width: 250px;
+        }
+        
+        /* Content margin */
+        .content-with-sidebar {
+            transition: margin-left 0.3s ease;
+        }
+        
+        .content-with-expanded-sidebar {
+            margin-left: 250px;
+        }
+        
+        /* Icon positioning */
+        .icon-container {
+            min-width: 40px;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
 </head>
 
-<body>
-    {% include 'djf_surveys/components/header_nav2.html' %}
-
+<body class="bg-gray-50">
+    <!-- Mobile sidebar backdrop -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-gray-800 bg-opacity-50 z-20 hidden" onclick="toggleSidebar()"></div>
+    
+    <!-- Main document overlay - hidden by default - used to detect clicks outside sidebar -->
+    <div id="document-overlay" class="fixed inset-0 z-10 hidden" onclick="closeSidebarOnClickOutside()"></div>
+    
+    <!-- Sidebar - placed outside layout flow -->
+    <div id="sidebar" class="sidebar sidebar-collapsed bg-teal-600 text-white shadow-lg">
+        <div class="pt-16 overflow-hidden">
+            <div class="px-4 py-2 flex justify-end md:hidden">
+                <button onclick="toggleSidebar()" class="text-white hover:text-gray-200">
+                    <i class="fa fa-times text-xl" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="px-4 space-y-2">
+                <a href="/survey" class="flex items-center bg-white text-teal-600 rounded-lg p-3 shadow-md hover:bg-gray-100 transition-colors">
+                    <div class="icon-container">
+                        <i class="fa fa-home text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <span class="ml-3 font-semibold text-lg whitespace-nowrap">Home</span>
+                </a>
+                <a href="/survey" class="flex items-center p-3 rounded-lg hover:bg-teal-700 transition-colors {% if not user.is_superuser %}text-gray-300 hover:text-white{% endif %}">
+                    <div class="icon-container">
+                        <i class="fa fa-tasks text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <span class="ml-3 font-semibold text-lg whitespace-nowrap">Survey</span>
+                </a>
+                <a href="/dashboard" class="flex items-center p-3 rounded-lg hover:bg-teal-700 transition-colors {% if not user.is_superuser %}text-gray-300 hover:text-white{% endif %}">
+                    <div class="icon-container">
+                        <i class="fa fa-dashboard text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <span class="ml-3 font-semibold text-lg whitespace-nowrap">Dashboard</span>
+                </a>
+                <a href="/analytics" class="flex items-center p-3 rounded-lg hover:bg-teal-700 transition-colors {% if not user.is_superuser %}text-gray-300 hover:text-white{% endif %}">
+                    <div class="icon-container">
+                        <i class="fa fa-bar-chart text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <span class="ml-3 font-semibold text-lg whitespace-nowrap">Analytics</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main content area -->
+    <div id="main-content" class="min-h-screen flex flex-col content-with-sidebar">
+        <!-- Header with sidebar toggle -->
+        <nav class="bg-white shadow-lg sticky top-0 z-50">
+            <div class="w-full px-4">
+                <div class="flex justify-between">
+                    <div class="flex items-center">
+                        <!-- Sidebar toggle button -->
+                        <button id="toggle-sidebar-btn" onclick="toggleSidebar()" class="flex items-center py-4 mr-3">
+                            <i class="fa fa-bars text-teal-600 text-xl" aria-hidden="true"></i>
+                        </button>
+                        
+                        <a href="/" class="flex items-center py-4">
+                            <span class="font-bold text-teal-600 text-lg">Survey Metrics</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Secondary Navbar items -->
+                    <div class="hidden md:flex items-center space-x-3">
+                        <a href="{% url 'djf_surveys:index' %}" class="p-2 font-medium text-gray-600 rounded-full hover:bg-teal-100 hover:text-teal-600 transition-colors">
+                            <i class="fa fa-bell text-lg" aria-hidden="true"></i>
+                        </a>
+                        <a href="{% url 'djf_surveys:index' %}" class="p-2 font-medium text-gray-600 rounded-full hover:bg-teal-100 hover:text-teal-600 transition-colors">
+                            <i class="fa fa-question-circle-o text-lg" aria-hidden="true"></i>
+                        </a>
+                        
+                        <a href="{% url 'logout_user' %}" class="py-2 px-4 font-medium bg-teal-100 text-teal-600 rounded-lg hover:bg-teal-600 hover:text-white transition-colors">
+                            Logout
+                        </a>
+                    </div>
+                    
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden flex items-center">
+                        <button class="outline-none mobile-menu-button p-2 rounded-md hover:bg-gray-100">
+                            <svg class="w-6 h-6 text-gray-600"
+                                 fill="none"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 stroke-width="2"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                            >
+                                <path d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile dropdown menu -->
+            <div class="hidden mobile-menu md:hidden">
+                <ul class="bg-white border-t shadow-inner">
+                    <li>
+                        <a href="{% url 'djf_surveys:admin_survey' %}" class="block py-3 px-4 text-sm {% if not user.is_superuser %}text-gray-400{% else %}text-gray-600{% endif %} hover:bg-teal-50 hover:text-teal-600 font-medium">
+                            {% trans "Survey" %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'djf_surveys:admin_dashboard_direct' %}" class="block py-3 px-4 text-sm {% if not user.is_superuser %}text-gray-400{% else %}text-gray-600{% endif %} hover:bg-teal-50 hover:text-teal-600 font-medium">
+                            {% trans "Dashboard" %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'djf_surveys:analytics_dashboard' %}" class="block py-3 px-4 text-sm {% if not user.is_superuser %}text-gray-400{% else %}text-gray-600{% endif %} hover:bg-teal-50 hover:text-teal-600 font-medium">
+                            {% trans "Analytics" %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout_user' %}" class="block py-3 px-4 text-sm text-gray-600 hover:bg-teal-50 hover:text-teal-600 font-medium">
+                            {% trans "Logout" %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <!-- Alert messages -->
     {% if messages %}
+            <div class="px-4 py-2 pt-4">
     {% for message in messages %}
     {% include 'djf_surveys/components/alert.html' %}
     {% endfor %}
+            </div>
     {% endif %}
-    <div class="w3-sidebar w3-bar-block" style="width:15%; background-color: rgb(56, 135, 130);">
-        <a style="font-size: x-large;background-color: white;margin-top: 20px;" class="w3-bar-item w3-button">
-            <i class="fa fa-home " style="background-color: white;font-size: xx-large;" aria-hidden="true"></i> Home
-        </a>
-        <a href="/dashboard" style="font-size: x-large;margin-top: 20px;" class="w3-bar-item w3-button">
-            <i class="fa fa-tasks" style="background-color: white;font-size: xx-large;" aria-hidden="true"></i> Survey
-        </a>
+        
+        <!-- Page content with scrolling -->
+        <div class="flex-1 overflow-auto p-4">
+            <div class="container mx-auto px-0">
+                {% block content %} {% endblock %}
     </div>
-    <div style="margin-left:15%">
-        <div class="container mx-auto">
-            {% block content %} {% endblock %}
         </div>
     </div>
 
-
     {% include 'djf_surveys/components/alert_js.html' %}
     {% block extra_js %}{% endblock %}
+    
+    <!-- Sidebar and mobile menu scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const documentOverlay = document.getElementById('document-overlay');
+            let sidebarOpen = false;
+            
+            // Global toggle function
+            window.toggleSidebar = function() {
+                if (sidebarOpen) {
+                    closeSidebar();
+                    localStorage.removeItem('sidebarOpen');
+                } else {
+                    openSidebar(true);
+                    localStorage.setItem('sidebarOpen', 'true');
+                }
+            };
+            
+            // Close sidebar when clicking outside
+            window.closeSidebarOnClickOutside = function() {
+                closeSidebar();
+            };
+            
+            // Add hover events for desktop
+            if (window.innerWidth >= 768) {
+                sidebar.addEventListener('mouseenter', function(e) {
+                    // Prevent hover if the sidebar is already open from a click
+                    if (!localStorage.getItem('sidebarOpen')) {
+                        openSidebar(false);
+                    }
+                });
+                
+                sidebar.addEventListener('mouseleave', function(e) {
+                    // Don't close on mouse leave if sidebar was opened by click
+                    if (!localStorage.getItem('sidebarOpen')) {
+                        closeSidebar();
+                    }
+                });
+            }
+            
+            function openSidebar(isPinned) {
+                sidebar.classList.remove('sidebar-collapsed');
+                sidebar.classList.add('sidebar-expanded');
+                mainContent.classList.add('content-with-expanded-sidebar');
+                sidebarOpen = true;
+                
+                // Handle the overlay
+                if (isPinned) {
+                    documentOverlay.classList.remove('hidden');
+                }
+                
+                // Only show backdrop on mobile
+                if (window.innerWidth < 768) {
+                    backdrop.classList.remove('hidden');
+                }
+            }
+            
+            function closeSidebar() {
+                sidebar.classList.remove('sidebar-expanded');
+                sidebar.classList.add('sidebar-collapsed');
+                mainContent.classList.remove('content-with-expanded-sidebar');
+                backdrop.classList.add('hidden');
+                documentOverlay.classList.add('hidden');
+                sidebarOpen = false;
+            }
+            
+            // Close sidebar when clicking anywhere in document (except sidebar)
+            sidebar.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+        
+        // Mobile dropdown menu toggle
+        const menuBtn = document.querySelector(".mobile-menu-button");
+        const menu = document.querySelector(".mobile-menu");
+
+        menuBtn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+        });
+    </script>
 </body>
 
 </html>
