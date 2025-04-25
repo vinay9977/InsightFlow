@@ -59,7 +59,7 @@ class AdminCreateQuestionView(ContextTitleMixin, CreateView):
         return context
 
     def get_success_url(self):
-        return reverse("djf_surveys:admin_questions_survey", args=[self.survey.slug])
+        return reverse("djf_surveys:admin_forms_survey", args=[self.survey.slug])
 
     def get_sub_title_page(self):
         return gettext("Type Field %s") % Question.TYPE_FIELD[self.type_field_id][1]

@@ -1,0 +1,23 @@
+{
+  "name": "insightflow",
+  "version": "1.0.0",
+  "description": "InsightFlow is a Django-based web application designed for managing surveys. This README file provides instructions on cloning, installing, and running the project locally.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinay9977/InsightFlow.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vinay9977/InsightFlow/issues"
+  },
+  "homepage": "https://github.com/vinay9977/InsightFlow#readme",
+  "devDependencies": {
+    "cypress": "^14.3.2"
+  }
+}

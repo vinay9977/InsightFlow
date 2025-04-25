@@ -70,11 +70,11 @@
                     
                     <div class="mt-4 text-sm text-gray-600 space-y-2">
                         {% if object.start_date %}
-                            <p>{% trans "Starts" %}: {{ object.start_date|date:"M d, Y H:i" }}</p>
+                            <p>{% trans "Starts" %}: {{ object.start_date|date:"M j, Y H:i" }}</p>
                         {% endif %}
                         
                         {% if object.end_date %}
-                            <p>{% trans "Ends" %}: {{ object.end_date|date:"M d, Y H:i" }}</p>
+                            <p>{% trans "Ends" %}: {{ object.end_date|date:"M j, Y H:i" }}</p>
                         {% endif %}
                         
                         {% if not object.start_date and not object.end_date %}
