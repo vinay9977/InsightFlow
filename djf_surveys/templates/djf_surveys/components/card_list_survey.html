@@ -1,4 +1,4 @@
-<div class="group relative">
+<div class="group relative h-full">
     
     <div class="hidden group-hover:flex -space-x-4 hover:space-x-1 float-right absolute -top-6 right-2 z-40">
         <a href="{% url 'djf_surveys:create' survey.slug %}" class="z-20 block p-4 text-purple-700 transition-all bg-purple-100 border-2 border-white rounded-full active:bg-purple-50 hover:scale-110 focus:outline-none focus:ring"
@@ -42,47 +42,47 @@
         {% endif %}
     </div>
 
-    <a class="relative block p-8 overflow-hidden border border-gray-100 rounded-lg bg-white hover:shadow-lg transition-shadow duration-300" href="{% if user.is_authenticated %}{% url 'djf_surveys:detail' survey.slug %}{% else %}{% url 'djf_surveys:create' survey.slug %}{% endif %}">
+    <a class="relative block p-8 overflow-hidden border border-gray-100 rounded-lg bg-white hover:shadow-lg transition-shadow duration-300 h-full flex flex-col" href="{% url 'djf_surveys:create' survey.slug %}">
         <span class="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-blue-500 to-purple-600"></span>
         
-        <!-- Survey Title -->
+        <!-- Title and status tags on the same line -->
         <div class="flex justify-between items-center mb-4">
             <h5 class="text-xl font-bold text-gray-900">
                 {{ survey.name }}
             </h5>
             
-            <!-- Status tags -->
+            <!-- Status tags on the right -->
             <div class="flex flex-wrap gap-2 justify-end max-w-[55%] ml-2">
                 {% if survey.status == "scheduled" %}
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 whitespace-nowrap">
                     <svg class="mr-1.5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
                         <circle cx="4" cy="4" r="3" />
                     </svg>
                     Scheduled
-                    <span class="ml-1">{{ survey.start_date|date:"M d, Y" }}</span>
+                    <span class="ml-1">{{ survey.start_date|date:"M j, Y" }}</span>
                 </span>
                 {% elif survey.status == "expired" %}
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 whitespace-nowrap">
                     <svg class="mr-1.5 h-2 w-2 text-red-400" fill="currentColor" viewBox="0 0 8 8">
                         <circle cx="4" cy="4" r="3" />
                     </svg>
                     Expired
                 </span>
                 {% elif survey.status == "active" %}
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 whitespace-nowrap">
                     <svg class="mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
                         <circle cx="4" cy="4" r="3" />
                     </svg>
                     Active
                     {% if survey.end_date %}
-                    <span class="ml-1">until {{ survey.end_date|date:"M d, Y" }}</span>
+                    <span class="ml-1 whitespace-nowrap">until {{ survey.end_date|date:"M j, Y" }}</span>
                     {% endif %}
                 </span>
                 {% endif %}
             </div>
         </div>
 
-        <div class="mt-4 sm:pr-8">
+        <div class="mt-4 sm:pr-8 flex-grow">
             <p class="text-sm text-gray-500">
                 {{ survey.description }}
             </p>
@@ -94,11 +94,11 @@
                     </svg>
                     <span>
                         {% if survey.start_date %}
-                        Available from: {{ survey.start_date|date:"M d, Y H:i" }}
+                        Available from: {{ survey.start_date|date:"M j, Y H:i" }}
                         {% endif %}
                         {% if survey.start_date and survey.end_date %} - {% endif %}
                         {% if survey.end_date %}
-                        Until: {{ survey.end_date|date:"M d, Y H:i" }}
+                        Until: {{ survey.end_date|date:"M j, Y H:i" }}
                         {% endif %}
                     </span>
                 </div>
